@@ -1,25 +1,222 @@
-/**
-  |============================
-  | include css partials with
-  | default @import url()
-  |============================
-*/
-@import url('./reset.css');
-@import url('./vite-promo.css');
-@import url('./header.css');
-
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color: #242424;
-  background-color: rgba(255, 255, 255, 0.87);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+*,
+*:after,
+*:befor {
+  box-sizing: border-box;
 }
+
+body {
+  background-color: #fff;
+  font-family: Montserrat;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.search-form {
+  text-align: center;
+  padding: 35px 0;
+}
+
+.search-input {
+  width: 320px;
+  border-radius: 7px;
+  border: 1px solid #808080;
+  outline: transparent;
+  padding: 10px 16px;
+  margin-right: 15px;
+}
+
+.search-inputh:focus {
+  border-color: #2a3a75;
+}
+
+.btn {
+  border-radius: 8px;
+
+  background-color: #626aa5;
+  border: transparent;
+
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+
+  transition: background-color 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 7px 25px;
+  margin-left: -10px;
+}
+
+.btn:hover {
+  background-color: #5c6172;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  max-width: calc(100vw - 48px);
+  justify-content: center;
+}
+
+.gallery-item {
+  margin-left: 20px;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover,
+.gallery-item:focus {
+  box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08),
+    0px 1px 1px rgba(46, 47, 66, 0.16), 0px 2px 1px rgba(46, 47, 66, 0.08);
+  transform: scale(1.05);
+}
+
+.gallery-image {
+  height: 40vh;
+  object-fit: cover;
+  display: block;
+  /* margin: 0 auto; */
+  /* transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1); */
+  cursor: pointer;
+}
+
+.gallery-link {
+  min-width: 320px;
+}
+
+.block {
+  text-align: center;
+}
+
+.title {
+  color: #212127;
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+.amount {
+  color: #212127;
+  font-family: Montserrat;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+
+
+.loader {
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 30px, 0 -30px;
+  border-radius: 4px;
+  background: currentColor;
+  display: none;
+  margin: 40vh auto 0;
+  position: relative;
+  color: #fff;
+  transform: translateY(30px);
+  box-sizing: border-box;
+  animation: animloader 2s ease infinite;
+}
+
+.loader::after,
+.loader::before {
+  content: '';
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 30px, 0 -30px;
+  border-radius: 4px;
+  background: currentColor;
+  color: #fff;
+  position: absolute;
+  left: 30px;
+  top: 0;
+  animation: animloader 2s 0.2s ease infinite;
+}
+
+.loader::before {
+  animation-delay: 0.4s;
+  left: 60px;
+}
+
+@keyframes animloader {
+  0% {
+    top: 0;
+    color: white;
+  }
+
+  50% {
+    top: 30px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  100% {
+    top: 0;
+    color: white;
+  }
+}
+
+.thumb-block {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #626aa5;
+  border-top: none;
+  padding: 10px 0;
+  background-color: #c9d3f6;
+}
+
+.loadbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.load-more-btn {
+  display: block;
+  border-radius: 8px;
+  background-color: #626aa5;;
+  border: transparent;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px 10px;
+}
+
+
