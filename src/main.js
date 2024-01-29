@@ -21,15 +21,13 @@ const lightbox = new SimpleLightbox('.gallery a', {
 
 // Оголошення змінних для контролю сторінки та кількості елементів на сторінці
 let currentPage = 1;
-const itemsPerPage = 20; // Можете змінити на бажане значення
+const itemsPerPage = 40; // Можете змінити на бажане значення
 let totalHits = 0; // Додаємо змінну для збереження загальної кількості зображень
 let isLoading = false;
 
 hideLoadMoreButton();
 
 loadMoreButton.addEventListener('click', loadMoreImages);
-
-
 
 async function loadMoreImages() {
   try {
@@ -47,10 +45,11 @@ async function loadMoreImages() {
 
     if (data.hits.length > 0) {
       appendImagesToGallery(data.hits);
-      //   displayImages(data.hits);
-      currentPage += 1;
       checkEndOfCollection(); // Перевірка, чи досягнуто кінця колекції
       smoothScroll(); // Прокручування сторінки
+      currentPage += 1; // Збільшуємо currentPage після завантаження нової сторінки
+      lightbox.refresh(); //Оновлюємо SimpleLightbox після завантаження нових зображень
+      // console.log('lightbox refreshed');
     } else {
       hideLoadMoreButton();
       showEndMessage(); // Повідомлення про кінець колекції
@@ -85,6 +84,7 @@ async function performSearch(query, page, perPage) {
   } finally {
     hideLoader();
     checkEndOfCollection();
+    showLoadMoreButton();
   }
 }
 
@@ -111,15 +111,24 @@ searchForm.addEventListener('submit', function (event) {
     return;
   }
 
+  // Скидання змінної сторінки та очищення попередніх результатів
+  currentPage = 1;
+  galleryList.innerHTML = '';
+
   // Показуємо індикатор завантаження перед відправкою запиту
   showLoader();
 
   performSearch(query, 1, itemsPerPage)
     .then(data => {
       displayImages(data.hits);
+      currentPage = 2; // збільшуємо currentPage, так як ми завантажили нову сторінку
     })
     .catch(error => {
       console.error(error);
+      // iziToast.error({
+      //   title: 'Error',
+      //   message: 'An error occurred while fetching data.',
+      // });
     })
     .finally(() => {
       hideLoader();
@@ -137,8 +146,8 @@ function displayImages(images) {
     });
     return;
   }
-  const markup = createMarkup(images);
-  galleryList.innerHTML += markup;
+  
+  galleryList.insertAdjacentHTML('beforeend', createMarkup(images));
 
   lightbox.refresh();
   hideLoader();
@@ -229,6 +238,6 @@ function checkEndOfCollection() {
 
 // Функція для відображення зображень у кінці списку
 function appendImagesToGallery(images) {
-  const markup = createMarkup(images)
-  galleryList.innerHTML += markup;
+  const markup = createMarkup(images);
+  galleryList.insertAdjacentHTML('beforeend', markup);
 }
