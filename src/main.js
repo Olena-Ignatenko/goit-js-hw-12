@@ -45,21 +45,22 @@ async function loadMoreImages() {
 
     if (data.hits.length > 0) {
       appendImagesToGallery(data.hits);
-      checkEndOfCollection(); // Перевірка, чи досягнуто кінця колекції
-      smoothScroll(); // Прокручування сторінки
-      currentPage += 1; // Збільшуємо currentPage після завантаження нової сторінки
-      lightbox.refresh(); //Оновлюємо SimpleLightbox після завантаження нових зображень
-      // console.log('lightbox refreshed');
-    } else {
-      hideLoadMoreButton();
-      showEndMessage(); // Повідомлення про кінець колекції
+      smoothScroll();
+      currentPage += 1;
+      lightbox.refresh();
     }
   } catch (error) {
     console.error(error);
+    iziToast.error({
+      title: 'Error',
+      message: 'An error occurred while fetching data.',
+    });
   } finally {
     isLoading = false;
   }
 }
+
+
 
 async function performSearch(query, page, perPage) {
   try {
@@ -77,6 +78,7 @@ async function performSearch(query, page, perPage) {
     const apiUrl = `${BASE_URL}?${searchParams.toString()}`;
     const response = await axios.get(apiUrl);
     totalHits = response.data.totalHits;
+    currentPage = page;
     return response.data;
   } catch (error) {
     console.error(error);
@@ -84,7 +86,6 @@ async function performSearch(query, page, perPage) {
   } finally {
     hideLoader();
     checkEndOfCollection();
-    showLoadMoreButton();
   }
 }
 
@@ -98,7 +99,7 @@ function smoothScroll() {
   });
 }
 
-searchForm.addEventListener('submit', function (event) {
+searchForm.addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const query = encodeURIComponent(searchInput.value.trim());
@@ -118,21 +119,19 @@ searchForm.addEventListener('submit', function (event) {
   // Показуємо індикатор завантаження перед відправкою запиту
   showLoader();
 
-  performSearch(query, 1, itemsPerPage)
-    .then(data => {
-      displayImages(data.hits);
-      currentPage = 2; // збільшуємо currentPage, так як ми завантажили нову сторінку
-    })
-    .catch(error => {
-      console.error(error);
-      // iziToast.error({
-      //   title: 'Error',
-      //   message: 'An error occurred while fetching data.',
-      // });
-    })
-    .finally(() => {
-      hideLoader();
+  try {
+    const data = await performSearch(query, 1, itemsPerPage);
+    displayImages(data.hits);
+    currentPage = 2; // збільшуємо currentPage, так як ми завантажили нову сторінку
+  } catch (error) {
+    console.error(error);
+    iziToast.error({
+      title: 'Error',
+      message: 'An error occurred while fetching data.',
     });
+  } finally {
+    hideLoader();
+  }
 });
 
 function displayImages(images) {
@@ -146,12 +145,11 @@ function displayImages(images) {
     });
     return;
   }
-  
+
   galleryList.insertAdjacentHTML('beforeend', createMarkup(images));
 
   lightbox.refresh();
   hideLoader();
-  showLoadMoreButton();
 }
 
 function createMarkup(images) {
@@ -230,9 +228,12 @@ function showEndMessage() {
 }
 
 function checkEndOfCollection() {
-  if (totalHits > 0 && currentPage > Math.ceil(totalHits / itemsPerPage)) {
+  const totalPages = Math.ceil(totalHits / itemsPerPage);
+  if (currentPage >= totalPages) {
     hideLoadMoreButton(); // Ховаємо кнопку "Load more"
     showEndMessage(); // Повідомлення про кінець колекції
+  } else {
+    showLoadMoreButton();
   }
 }
 
